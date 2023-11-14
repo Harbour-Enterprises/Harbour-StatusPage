@@ -24,7 +24,10 @@ export default defineConfig({
   ],
 
   themeConfig: {
-    logo: { src: '/icon.svg' },
+    logo: {
+      light: '/logo-light.svg',
+      dark: '/logo-dark.svg'
+    },
     siteTitle: "Status Page",
     footer: {
       message: '© 2023 Harbour Enterprises, Inc. 💙💛',
