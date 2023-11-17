@@ -1,6 +1,7 @@
 import Components from 'unplugin-vue-components/vite'; // This imports the plugin
 import { defineConfig } from 'vitepress';
 
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: 'Status Page',
@@ -22,6 +23,7 @@ export default defineConfig({
     ['meta', { name: 'og:type', content: 'website' }],
     ['meta', { name: 'og:locale', content: 'en' }],
     ['meta', { name: 'og:site_name', content: 'Harbour Status Page' }],
+    ['link', { rel: 'icon', href: '/Harbour-StatusPage/favicon.ico' }]
   ],
 
   themeConfig: {
