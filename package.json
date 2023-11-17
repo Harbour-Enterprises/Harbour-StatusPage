@@ -4,7 +4,10 @@
     "build": "vitepress build",
     "preview": "vitepress preview"
   },
-  "dependencies": {
-    "vitepress": "^1.0.0-rc.25"
+  "devDependencies": {
+    "@vicons/fa": "^0.12.0",
+    "naive-ui": "^2.35.0",
+    "unplugin-vue-components": "^0.25.2",
+    "vitepress": "^1.0.0-rc.27"
   }
 }

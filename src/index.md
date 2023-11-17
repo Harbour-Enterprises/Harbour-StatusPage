@@ -2,4 +2,14 @@
 title: 'Harbour'
 ---
 
-<h1>Harbour uptime monitor and status page, powered entirely by GitHub.</h1>
+<script setup>
+import { defineAsyncComponent } from 'vue'
+const statusBanner = defineAsyncComponent(() => import('../.vitepress/theme/components/statusBanner.vue'))
+const statusTable = defineAsyncComponent(() => import('../.vitepress/theme/components/statusTable.vue'))
+</script>
+
+<br/>
+<statusBanner />
+
+<h2>Current status</h2>
+<statusTable />
