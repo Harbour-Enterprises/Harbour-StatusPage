@@ -1,7 +1,18 @@
+<script setup>
+import { CheckCircle, ExclamationCircle } from '@vicons/fa';
+import { NCard, NIcon } from 'naive-ui';
+
+const props = defineProps({
+  title: String,
+  status: String,
+});
+</script>
+
 <template>
-  <n-card title="API">
-    <slot>Normal</slot>
-    <n-icon :component="CheckCircle" />
+  <n-card :title="title">
+    {{ status === 'normal' ? 'Normal' : 'Outage' }}
+    <n-icon v-if="status === 'normal'" :component="CheckCircle" />
+    <n-icon v-else :component="ExclamationCircle" />
   </n-card>
 </template>
 
@@ -10,8 +21,3 @@
   width: 100%;
 }
 </style>
-
-<script setup>
-import { CheckCircle } from '@vicons/fa';
-import { NCard, NIcon } from 'naive-ui';
-</script>

@@ -4,12 +4,12 @@ title: 'Harbour'
 
 <script setup>
 import { defineAsyncComponent } from 'vue'
-const statusBanner = defineAsyncComponent(() => import('../.vitepress/theme/components/statusBanner.vue'))
-const statusTable = defineAsyncComponent(() => import('../.vitepress/theme/components/statusTable.vue'))
+const StatusBanner = defineAsyncComponent(() => import('../.vitepress/theme/components/StatusBanner.vue'))
+const StatusTable = defineAsyncComponent(() => import('../.vitepress/theme/components/StatusTable.vue'))
 </script>
 
 <br/>
-<statusBanner />
+<StatusBanner />
 
 <h2>Current status</h2>
-<statusTable />
+<StatusTable />

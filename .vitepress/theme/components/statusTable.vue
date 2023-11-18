@@ -1,14 +1,19 @@
+<script setup>
+import { NTable } from 'naive-ui';
+import StatusTableCard from './StatusTableCard.vue';
+</script>
+
 <template>
   <n-table :bordered="false">
     <n-tbody>
       <n-tr>
-        <statusTableCard>Normal</statusTableCard>
+        <StatusTableCard title="API v1" status="normal" />
       </n-tr>
       <n-tr>
-        <statusTableCard>Normal</statusTableCard>
+        <StatusTableCard title="API v2" status="normal" />
       </n-tr>
       <n-tr>
-        <statusTableCard>Normal</statusTableCard>
+        <StatusTableCard title="Verifications" />
       </n-tr>
     </n-tbody>
   </n-table>
@@ -19,8 +24,3 @@
   width: 100%;
 }
 </style>
-
-<script setup>
-import { NTable } from 'naive-ui';
-import statusTableCard from './statusTableCard.vue';
-</script>

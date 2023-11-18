@@ -1,3 +1,8 @@
+<script setup>
+import { CheckCircle } from '@vicons/fa';
+import { NAlert, NIcon } from 'naive-ui';
+</script>
+
 <template>
   <n-alert title="All Systems Operational" type="success">
     <template #icon>
@@ -5,8 +10,3 @@
     </template>
   </n-alert>
 </template>
-
-<script setup>
-import { CheckCircle } from '@vicons/fa';
-import { NAlert, NIcon } from 'naive-ui';
-</script>
