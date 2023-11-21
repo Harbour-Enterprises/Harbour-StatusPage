@@ -49,7 +49,7 @@ export default defineConfig({
         // relative paths to the directory to search for components.
         dirs: ['.vitepress/theme/components'],
         // valid file extensions for components.
-        extensions: ['vue', 'md'],
+        extensions: ['vue'],
         // allow auto import and register components used in markdown
         include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
         // search for subdirectories

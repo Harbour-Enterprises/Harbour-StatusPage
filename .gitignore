@@ -1,4 +1,5 @@
 node_modules/
 .vitepress/cache/
 .vscode/
+.idea/
 .DS_Store
