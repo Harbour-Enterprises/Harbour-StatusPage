@@ -41,7 +41,6 @@ jobs:
             echo "[date_time] $date_time"
             echo $date_time $result >> "logs/${key}_report.log"
 
-            ls -la logs
-            head -n 10 logs/${key}_report.log
+            tail -n 10 logs/${key}_report.log
 
           done
