@@ -22,7 +22,7 @@ jobs:
           echo "[urls]: $urls"
           echo "[keys]: $keys"
 
-          i=1
+          i=0
           for url in $urls; do
             i=$((i+1))
             echo "[i]: $i"
