@@ -13,12 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run Health Check Script
-        working-directory: .
+        working-directory: src/public
         run: |
           success_codes=(200 201 202 203 204 205 206 207 208 226 300 301 302 303 304 305 306 307 308)
 
-          urls=$(yq e '.urls[].url' src/public/config.yaml)
-          keys=$(yq e '.urls[].key' src/public/config.yaml)
+          urls=$(yq e '.urls[].url' config.yaml)
+          keys=$(yq e '.urls[].key' config.yaml)
           echo "[urls]: $urls"
           echo "[keys]: $keys"
 
@@ -39,9 +39,9 @@ jobs:
 
             date_time=$(date +'%Y-%m-%d %H:%M')
             echo "[date_time] $date_time"
-            echo $date_time $result >> "src/logs/public/${key}_report.log"
+            echo $date_time $result >> "logs/${key}_report.log"
 
-            ls -la src/public/logs
-            head -n 10 src/logs/public/${key}_report.log
+            ls -la logs
+            head -n 10 logs/${key}_report.log
 
           done
