@@ -14,15 +14,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run Health Check Script
         run: |
-          success_codes=[200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308]
+          success_codes=(200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308)
           urls=$(yq e '.urls[].url' src/public/config.yaml)
           keys=$(yq e '.urls[].key' src/public/config.yaml)
           for url in $urls; do
             echo "Checking $url"
             response=$(curl -s -o /dev/null -w "%{http_code}" $url)
             echo "Response: $response"
-            result="success"
-            if [ $response -neq $success_codes ]; then
+            result="failure"
+            if [[ ${success_codes[@]} =~ $response ]]; then
               result="failure"
             fi
             echo "Result: $result"
