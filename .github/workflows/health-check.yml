@@ -24,6 +24,8 @@ jobs:
           echo "[urls]: $urls"
           echo "[keys]: $keys"
 
+          mkdir -p logs
+
           i=0
           for url in $urls; do
             i=$((i+1))
