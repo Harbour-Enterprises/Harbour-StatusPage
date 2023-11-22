@@ -34,10 +34,10 @@ onMounted(async () => {
   const commonStatus = reports.value.reduce((acc, item) => acc + item, 0);
 
   currentStatus.value = commonStatus === (urls.length)
-      ? 'success'
-      : commonStatus < (0.3 * urls.length)
-        ? 'failure'
-        : 'partial';
+    ? 'success'
+    : commonStatus < (0.3 * urls.length)
+      ? 'failure'
+      : 'partial';
 });
 </script>
 

@@ -14,7 +14,7 @@ onMounted(async () => {
 <template>
   <n-list bordered>
     <n-list-item v-for="urlData in urls">
-      <StatusTableItem 
+      <StatusTableItem
         :title="urlData.key"
         :description="urlData.url"
       />
@@ -22,8 +22,3 @@ onMounted(async () => {
   </n-list>
 </template>
 
-<style scoped>
-.n-table {
-  width: 100%;
-}
-</style>
