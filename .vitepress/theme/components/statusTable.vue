@@ -1,22 +1,25 @@
 <script setup>
-import { NTable } from 'naive-ui';
-import StatusTableCard from './StatusTableCard.vue';
+import { onMounted, ref } from 'vue';
+import { NList, NListItem } from 'naive-ui';
+import StatusTableItem from './StatusTableItem.vue';
+import { getUrls } from '../../prepareData';
+
+const urls = ref([]);
+
+onMounted(async () => {
+  urls.value = await getUrls();
+});
 </script>
 
 <template>
-  <n-table :bordered="false">
-    <n-tbody>
-      <n-tr>
-        <StatusTableCard title="API v1" status="normal" />
-      </n-tr>
-      <n-tr>
-        <StatusTableCard title="API v2" status="normal" />
-      </n-tr>
-      <n-tr>
-        <StatusTableCard title="Verifications" />
-      </n-tr>
-    </n-tbody>
-  </n-table>
+  <n-list bordered>
+    <n-list-item v-for="urlData in urls">
+      <StatusTableItem 
+        :title="urlData.key"
+        :description="urlData.url"
+      />
+    </n-list-item>
+  </n-list>
 </template>
 
 <style scoped>
