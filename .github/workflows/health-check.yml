@@ -22,10 +22,12 @@ jobs:
           echo "[urls]: $urls"
           echo "[keys]: $keys"
 
-          for i in "${!urls[@]}"; do
-            url=${urls[$i]}
+          i=1
+          for url in $urls; do
+            i=$((i+1))
+            echo "[i]: $i"
             echo "[url]: $url"
-            key=${keys[$i]}
+            key=$(echo $keys | cut -d' ' -f$i)
             echo "[key]: $key"
 
             response=$(curl -s -o /dev/null -w "%{http_code}" $url)
