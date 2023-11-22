@@ -38,9 +38,9 @@ jobs:
 
             date_time=$(date +'%Y-%m-%d %H:%M')
             echo "[date_time] $date_time"
-            echo $date_time $result >> "src/logs/${key}_report.log"
+            echo $date_time $result >> "src/logs/public/${key}_report.log"
 
-            ls -la src/logs
-            head -n 10 src/logs/${key}_report.log
+            ls -la src/public/logs
+            head -n 10 src/logs/public/${key}_report.log
 
           done
