@@ -34,14 +34,15 @@ jobs:
             echo "[response]: $response"
 
             result="failure"
+            
             if [[ ${success_codes[@]} =~ $response ]]; then
-              result="failure"
+              result="success"
             fi
             echo "[result]: $result"
 
             date_time=$(date +'%Y-%m-%d %H:%M')
             echo "[date_time] $date_time"
-            echo $date_time $result >> "logs/${key}_report.log"
+            echo $date_time, $result >> "logs/${key}_report.log"
 
             tail -n 10 logs/${key}_report.log
 
