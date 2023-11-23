@@ -25,11 +25,11 @@ const getStatus = (num) => {
     class="month-data"
   >
     <div 
-      v-for="(value, index) in Object.entries(report)"
+      v-for="value in Object.entries(report).slice(0, 30).reverse()"
       class="stats-item"
     >
-      <template v-if="index < 30">
-        <n-popover trigger="hover">
+      <template v-if="value[0] !== 'upTime'">
+        <n-popover trigger="hover" :delay="50">
           <template #trigger>
             <div class="stats-item-block" :style="{ backgroundColor: colors[getStatus(value[1])] }"></div>
           </template>
@@ -46,13 +46,11 @@ const getStatus = (num) => {
 <style scoped lang="scss">
 .month-data {
   display: flex;
-  flex-direction: row-reverse;
   align-items: center;
   flex-wrap: wrap;
-  justify-content: space-between;
   gap: 6px;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 .stats-item {
   &-block {
