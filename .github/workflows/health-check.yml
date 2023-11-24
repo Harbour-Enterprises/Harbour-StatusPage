@@ -73,15 +73,8 @@ jobs:
 
       - name: Create GitHub Issue
         if: ${{ steps.health_check.outputs.failed_urls != '' }}
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const failed_urls = '${{ steps.health_check.outputs.failed_urls }}'
-            console.log(failed_urls)
-            github.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: "Health Check Report",
-              body: "Broken Site () was down:\nHTTP code: 0\nResponse time: 0 ms",
-            });
+        run: |
+          echo "[create github issue...]"
+          failed_urls=${{ steps.health_check.outputs.failed_urls }}
+          echo "[failed_urls]: $failed_urls"
+          gh issue create --title "Health Check Failed" --body "The following URLs failed: $failed_urls"
