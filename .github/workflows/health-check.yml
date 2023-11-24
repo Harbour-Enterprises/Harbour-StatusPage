@@ -53,13 +53,13 @@ jobs:
             tail -n 10 logs/${key}_report.log
 
             if [ $result == "failure" ]; then
-              results=$(echo $results | jq --arg key "$key" --arg url "$url" --arg result "$result" '. + {($key): {"url": $url, "result": $result}}')
+              results=$(echo $results | jq --arg url "$url" --arg result "$result" '. + {($url): $result}')
             fi
 
           done
 
           echo "[results]: $results"
-          echo "results=$results" >> $GITHUB_OUTPUT
+          echo "results='$results'" >> $GITHUB_OUTPUT
 
       - name: Git commit logs
         working-directory: src/public
