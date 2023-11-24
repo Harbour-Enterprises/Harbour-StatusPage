@@ -30,7 +30,7 @@ jobs:
           mkdir -p logs
 
           i=0
-          failed_checks=""
+          failed_json='['
           for url in $urls; do
             i=$((i+1))
             echo "[i]: $i"
@@ -62,14 +62,14 @@ jobs:
             tail -n 10 logs/${key}_report.log
 
             if [ $result == "failure" ]; then
-              # failed_checks using printf
-              failed_checks=$(printf "%s\n{%s}(%s) was down:\nHTTP code: %s\nResponse time: %s ms" "$failed_checks" "$name" "$url" "$response_code" "$response_time")
+              failed_json+="{\"name\": \"$name\", \"url\": \"$url\", \"response_code\": \"$response_code\", \"response_time\": \"$response_time\"}, "
             fi
 
           done
+          failed_json=${failed_json::-2}
 
-          echo "[failed_checks]: $failed_checks"
-          echo "failed_checks='$failed_checks'" >> $GITHUB_OUTPUT
+          echo "[failed_json]: $failed_json"
+          echo "failed_json='$failed_json'" >> $GITHUB_OUTPUT
 
       - name: Git commit logs
         id: commit
@@ -87,13 +87,13 @@ jobs:
           echo "hash='$hash'" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Issue
-        if: steps.health_check.outputs.failed_checks != ''
+        if: ${{ fromJson(steps.health_check.outputs.failed_json) != '[]' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "[get outputs...]"
-          failed_checks=${{ steps.health_check.outputs.failed_checks }}
-          echo "[failed_checks]: $failed_checks"
+          failed_json=${{ steps.health_check.outputs.failed_json }}
+          echo "[failed_json]: $failed_json"
           # commit_hash=${{ steps.commit.outputs.hash }}
           # echo "[commit_hash]: $commit_hash"
           # commit_short_hash=${commit_hash:0:7}
