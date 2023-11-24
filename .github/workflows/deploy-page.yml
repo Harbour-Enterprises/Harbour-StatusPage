@@ -1,7 +1,5 @@
 name: Deploy Status Page
-on:
-  [workflow_dispatch]
-  [push]
+on: [push]
 jobs:
   deploy:
     runs-on: ubuntu-latest
