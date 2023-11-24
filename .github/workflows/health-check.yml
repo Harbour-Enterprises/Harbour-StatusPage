@@ -22,26 +22,35 @@ jobs:
 
           urls=$(yq e '.urls[].url' config.yaml)
           keys=$(yq e '.urls[].key' config.yaml)
+          names=$(yq e '.urls[].name' config.yaml)
           echo "[urls]: $urls"
           echo "[keys]: $keys"
+          echo "[names]: $names"
 
           mkdir -p logs
 
           i=0
-          failed_urls=()
+          failed_checks=""
           for url in $urls; do
             i=$((i+1))
             echo "[i]: $i"
-            echo "[url]: $url"
             key=$(echo $keys | cut -d' ' -f$i)
+            name=$(echo $names | cut -d' ' -f$i)
+            echo "[url]: $url"
             echo "[key]: $key"
+            echo "[name]: $name"
 
-            response=$(curl -s -o /dev/null -w "%{http_code}" $url)
+            response=$(curl -s -o /dev/null -w "%{http_code}, %{time_total}" $url)
             echo "[response]: $response"
 
+            response_code=$(echo $response | cut -d',' -f1)
+            echo "[response_code]: $response_code"
+
+            response_time=$(echo $response | cut -d',' -f2)
+            echo "[response_time]: $response_time"
+
             result="failure"
-            
-            if [[ ${success_codes[@]} =~ $response ]]; then
+            if [[ ${success_codes[@]} =~ $response_code ]]; then
               result="success"
             fi
             echo "[result]: $result"
@@ -53,13 +62,13 @@ jobs:
             tail -n 10 logs/${key}_report.log
 
             if [ $result == "failure" ]; then
-              failed_urls+=($url)
+              failed_checks="echo $failed_checks | printf '{"key":"%s","name":"%s","url":"%s", "response_time":"%s", "response_code":"%s"}\n' $key $name $url $response_time $response_code"
             fi
 
           done
 
-          echo "[failed_urls]: $failed_urls"
-          echo "failed_urls='$failed_urls'" >> $GITHUB_OUTPUT
+          echo "[failed_checks]: $failed_checks"
+          echo "failed_checks='$failed_checks'" >> $GITHUB_OUTPUT
 
       - name: Git commit logs
         id: commit
@@ -77,13 +86,13 @@ jobs:
           echo "hash='$hash'" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Issue
-        if: ${{ steps.health_check.outputs.failed_urls != '' }}
+        if: steps.health_check.outputs.failed_checks != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "[get outputs...]"
-          failed_urls=${{ steps.health_check.outputs.failed_urls }}
-          echo "[failed_urls]: $failed_urls"
+          failed_checks=${{ steps.health_check.outputs.failed_checks }}
+          echo "[failed_checks]: $failed_checks"
           commit_hash=${{ steps.commit.outputs.hash }}
           echo "[commit_hash]: $commit_hash"
           commit_short_hash=${commit_hash:0:7}
@@ -94,4 +103,4 @@ jobs:
           echo "[create github issue...]"
           gh issue create \
           --title "Health Check Failed" \
-          --body "In [$commit_short_hash]($commit_url), Harbour API ($failed_urls) was down:\nHTTP code: 404\nResponse time: 4.7 ms"
+          --body "In [$commit_short_hash]($commit_url), Harbour API (https://test.com) was down:\nHTTP code: 404\nResponse time: 4.7 ms"
