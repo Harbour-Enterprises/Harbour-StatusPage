@@ -1,5 +1,11 @@
 name: Deploy Status Page
-on: [push]
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/**'
 jobs:
   deploy:
     runs-on: ubuntu-latest
