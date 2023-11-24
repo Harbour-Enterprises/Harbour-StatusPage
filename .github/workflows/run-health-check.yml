@@ -121,3 +121,6 @@ jobs:
             --body "In [$commit_short_hash]($commit_url), $name ($url) was down:<br><br>- HTTP Code: $response_code<br>- Response Time: $response_time"
 
           done
+
+  deploy-page:
+    uses: Harbour-Enterprises/Harbour-GHA-Workflows/.github/workflows/deploy-page.yml@main
