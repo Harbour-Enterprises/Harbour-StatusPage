@@ -94,7 +94,4 @@ jobs:
           echo "[create github issue...]"
           gh issue create \
           --title "Health Check Failed" \
-          --body "In [$commit_short_hash]($commit_url), Harbour API ($failed_urls) was down:
-
-HTTP code: 404
-Response time: 4.7 ms
+          --body "In [$commit_short_hash]($commit_url), Harbour API ($failed_urls) was down:\nHTTP code: 404\nResponse time: 4.7 ms"
