@@ -62,6 +62,7 @@ jobs:
           echo "failed_urls='$failed_urls'" >> $GITHUB_OUTPUT
 
       - name: Git commit logs
+        id: commit
         working-directory: src/public
         run: |
           echo "[git commit logs...]"
@@ -71,12 +72,29 @@ jobs:
           git commit -m "chore: update logs"
           git push
 
+          hash=$(git rev-parse HEAD)
+          echo "[hash]: $hash"
+          echo "hash='$hash'" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Issue
         if: ${{ steps.health_check.outputs.failed_urls != '' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "[create github issue...]"
+          echo "[get outputs...]"
           failed_urls=${{ steps.health_check.outputs.failed_urls }}
           echo "[failed_urls]: $failed_urls"
-          gh issue create --title "Health Check Failed" --body "The following URLs failed: $failed_urls"
+          commit_hash=${{ steps.commit.outputs.hash }}
+          echo "[commit_hash]: $commit_hash"
+          commit_short_hash=${commit_hash:0:7}
+          echo "[commit_short_hash]: $commit_short_hash"
+          commit_url="https://github.com/Harbour-Enterprises/Harbour-StatusPage/commit/$commit_hash"
+          echo "[commit_url]: $commit_url"
+
+          echo "[create github issue...]"
+          gh issue create \
+          --title "Health Check Failed" \
+          --body "In [$commit_short_hash]($commit_url), Harbour API ($failed_urls) was down:
+
+HTTP code: 404
+Response time: 4.7 ms
