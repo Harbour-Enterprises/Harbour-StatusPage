@@ -94,14 +94,24 @@ jobs:
           echo "[get outputs...]"
           failed_json=${{ steps.health_check.outputs.failed_json }}
           echo "[failed_json]: $failed_json"
-          # commit_hash=${{ steps.commit.outputs.hash }}
-          # echo "[commit_hash]: $commit_hash"
-          # commit_short_hash=${commit_hash:0:7}
-          # echo "[commit_short_hash]: $commit_short_hash"
-          # commit_url="https://github.com/Harbour-Enterprises/Harbour-StatusPage/commit/$commit_hash"
-          # echo "[commit_url]: $commit_url"
+          name=$(echo $failed_json | jq -r '.name')
+          echo "[name]: $name"
+          url=$(echo $failed_json | jq -r '.url')
+          echo "[url]: $url"
+          response_code=$(echo $failed_json | jq -r '.response_code')
+          echo "[response_code]: $response_code"
+          response_time=$(echo $failed_json | jq -r '.response_time')
+          echo "[response_time]: $response_time"
 
-          # echo "[create github issue...]"
-          # gh issue create \
-          # --title "Health Check Failed" \
-          # --body "In [$commit_short_hash]($commit_url), Harbour API (https://test.com) was down:\nHTTP code: 404\nResponse time: 4.7 ms"
+          echo "[get commit hash...]"
+          commit_hash=${{ steps.commit.outputs.hash }}
+          echo "[commit_hash]: $commit_hash"
+          commit_short_hash=${commit_hash:0:7}
+          echo "[commit_short_hash]: $commit_short_hash"
+          commit_url="https://github.com/Harbour-Enterprises/Harbour-StatusPage/commit/$commit_hash"
+          echo "[commit_url]: $commit_url"
+
+          echo "[create github issue...]"
+          gh issue create \
+          --title "Health Check Failed" \
+          --body "In [$commit_short_hash]($commit_url), $name ($url) was down:  - HTTP Code: $response_code  - Response Time: $response_time"
