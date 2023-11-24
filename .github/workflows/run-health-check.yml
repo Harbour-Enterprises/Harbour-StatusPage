@@ -92,32 +92,28 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "[get outputs...]"
+          echo "[get commit hash...]"
+          commit_hash=${{ steps.commit.outputs.hash }}
+          echo "[commit_hash]: $commit_hash"
+          commit_short_hash=${commit_hash:0:7}
+          echo "[commit_short_hash]: $commit_short_hash"
+          commit_url="https://github.com/Harbour-Enterprises/Harbour-StatusPage/commit/$commit_hash"
+          echo "[commit_url]: $commit_url"
+
+          echo "[iterate over failed endpoints...]"
           failed_endpoints=${{ steps.health_check.outputs.failed_endpoints }}
-          echo "[failed_endpoints]: $failed_endpoints"
+          echo "[failed_endpoints]: $failed_endpoints"        
+          jq -c '.[]' <<< $failed_endpoints | while read i; do
 
-          # iterate over failed endpoints
-          for failed_endpoint in $(echo "${failed_endpoints}" | jq -r '.[] | @base64'); do
-            _jq() {
-              echo ${failed_endpoint} | base64 --decode | jq -r ${1}
-            }
-            
-            name=$(echo $failed_endpoint | jq -r '.name')
+            echo "[get endpoint details...]"
+            name=$(echo $i | jq -r '.name')
+            url=$(echo $i | jq -r '.url')   
+            response_code=$(echo $i | jq -r '.response_code')
+            response_time=$(echo $i | jq -r '.response_time')
             echo "[name]: $name"
-            url=$(echo $failed_endpoint | jq -r '.url')
             echo "[url]: $url"
-            response_code=$(echo $failed_endpoint | jq -r '.response_code')
             echo "[response_code]: $response_code"
-            response_time=$(echo $failed_endpoint | jq -r '.response_time')
             echo "[response_time]: $response_time"
-
-            echo "[get commit hash...]"
-            commit_hash=${{ steps.commit.outputs.hash }}
-            echo "[commit_hash]: $commit_hash"
-            commit_short_hash=${commit_hash:0:7}
-            echo "[commit_short_hash]: $commit_short_hash"
-            commit_url="https://github.com/Harbour-Enterprises/Harbour-StatusPage/commit/$commit_hash"
-            echo "[commit_url]: $commit_url"
 
             echo "[create github issue...]"
             gh issue create \
