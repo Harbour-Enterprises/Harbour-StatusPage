@@ -1,4 +1,4 @@
-name: Deploy GitHub Pages
+name: Deploy Status Page
 on:
   workflow_dispatch: {}
   push:
