@@ -73,6 +73,8 @@ jobs:
 
       - name: Create GitHub Issue
         if: ${{ steps.health_check.outputs.failed_urls != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "[create github issue...]"
           failed_urls=${{ steps.health_check.outputs.failed_urls }}
