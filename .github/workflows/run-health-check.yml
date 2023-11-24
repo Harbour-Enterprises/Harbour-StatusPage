@@ -118,6 +118,6 @@ jobs:
             echo "[create github issue...]"
             gh issue create \
             --title "Health Check Failed" \
-            --body "In [$commit_short_hash]($commit_url), $name ($url) was down:<br>- HTTP Code: $response_code<br>- Response Time: $response_time"
+            --body "In [$commit_short_hash]($commit_url), $name ($url) was down:<br><br>- HTTP Code: $response_code<br>- Response Time: $response_time"
 
           done
