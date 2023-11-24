@@ -96,9 +96,12 @@ jobs:
           failed_endpoints=${{ steps.health_check.outputs.failed_endpoints }}
           echo "[failed_endpoints]: $failed_endpoints"
 
-          for failed_endpoint in $failed_endpoints; do
-            echo "[failed_endpoint]: $failed_endpoint"
-
+          # iterate over failed endpoints
+          for failed_endpoint in $(echo "${failed_endpoints}" | jq -r '.[] | @base64'); do
+            _jq() {
+              echo ${failed_endpoint} | base64 --decode | jq -r ${1}
+            }
+            
             name=$(echo $failed_endpoint | jq -r '.name')
             echo "[name]: $name"
             url=$(echo $failed_endpoint | jq -r '.url')
