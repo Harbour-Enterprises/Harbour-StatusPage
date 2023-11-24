@@ -30,7 +30,7 @@ jobs:
           mkdir -p logs
 
           i=0
-          failed_json='['
+          failed_endpoints='['
           for url in $urls; do
             i=$((i+1))
             echo "[i]: $i"
@@ -62,15 +62,15 @@ jobs:
             tail -n 10 logs/${key}_report.log
 
             if [ $result == "failure" ]; then
-              failed_json+="{\"name\": \"$name\", \"url\": \"$url\", \"response_code\": \"$response_code\", \"response_time\": \"$response_time\"}, "
+              failed_endpoints+="{\"name\": \"$name\", \"url\": \"$url\", \"response_code\": \"$response_code\", \"response_time\": \"$response_time\"}, "
             fi
 
           done
-          failed_json=${failed_json::-2}
-          failed_json+=']'
+          failed_endpoints=${failed_endpoints::-2}
+          failed_endpoints+=']'
 
-          echo "[failed_json]: $failed_json"
-          echo "failed_json='$failed_json'" >> $GITHUB_OUTPUT
+          echo "[failed_endpoints]: $failed_endpoints"
+          echo "failed_endpoints='$failed_endpoints'" >> $GITHUB_OUTPUT
 
       - name: Git commit logs
         id: commit
@@ -88,31 +88,37 @@ jobs:
           echo "hash='$hash'" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Issue
-        if: ${{ fromJson(steps.health_check.outputs.failed_json) != '[]' }}
+        if: ${{ fromJson(steps.health_check.outputs.failed_endpoints) != '[]' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "[get outputs...]"
-          failed_json=${{ steps.health_check.outputs.failed_json }}
-          echo "[failed_json]: $failed_json"
-          name=$(echo $failed_json | jq -r '.name')
-          echo "[name]: $name"
-          url=$(echo $failed_json | jq -r '.url')
-          echo "[url]: $url"
-          response_code=$(echo $failed_json | jq -r '.response_code')
-          echo "[response_code]: $response_code"
-          response_time=$(echo $failed_json | jq -r '.response_time')
-          echo "[response_time]: $response_time"
+          failed_endpoints=${{ steps.health_check.outputs.failed_endpoints }}
+          echo "[failed_endpoints]: $failed_endpoints"
 
-          echo "[get commit hash...]"
-          commit_hash=${{ steps.commit.outputs.hash }}
-          echo "[commit_hash]: $commit_hash"
-          commit_short_hash=${commit_hash:0:7}
-          echo "[commit_short_hash]: $commit_short_hash"
-          commit_url="https://github.com/Harbour-Enterprises/Harbour-StatusPage/commit/$commit_hash"
-          echo "[commit_url]: $commit_url"
+          for failed_endpoint in $failed_endpoints; do
+            echo "[failed_endpoint]: $failed_endpoint"
 
-          echo "[create github issue...]"
-          gh issue create \
-          --title "Health Check Failed" \
-          --body "In [$commit_short_hash]($commit_url), $name ($url) was down:  - HTTP Code: $response_code  - Response Time: $response_time"
+            name=$(echo $failed_endpoint | jq -r '.name')
+            echo "[name]: $name"
+            url=$(echo $failed_endpoint | jq -r '.url')
+            echo "[url]: $url"
+            response_code=$(echo $failed_endpoint | jq -r '.response_code')
+            echo "[response_code]: $response_code"
+            response_time=$(echo $failed_endpoint | jq -r '.response_time')
+            echo "[response_time]: $response_time"
+
+            echo "[get commit hash...]"
+            commit_hash=${{ steps.commit.outputs.hash }}
+            echo "[commit_hash]: $commit_hash"
+            commit_short_hash=${commit_hash:0:7}
+            echo "[commit_short_hash]: $commit_short_hash"
+            commit_url="https://github.com/Harbour-Enterprises/Harbour-StatusPage/commit/$commit_hash"
+            echo "[commit_url]: $commit_url"
+
+            echo "[create github issue...]"
+            gh issue create \
+            --title "Health Check Failed" \
+            --body "In [$commit_short_hash]($commit_url), $name ($url) was down:  - HTTP Code: $response_code  - Response Time: $response_time"
+
+          done
