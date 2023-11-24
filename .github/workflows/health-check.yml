@@ -76,14 +76,14 @@ jobs:
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const results = ${{ steps.health_check.outputs.results }}
-          console.log(results)
-          issueTitle = "Health Check Report"
-          issueBody = "Broken Site (https://thissitedoesnotexist.com) was down:\nHTTP code: 0\nResponse time: 0 ms"
-          github.issues.create({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            title: issueTitle,
-            body: issueBody,
-          });
+          script: |
+            const results = ${{ steps.health_check.outputs.results }}
+            console.log(results)
+            issueTitle = "Health Check Report"
+            issueBody = "Broken Site (https://thissitedoesnotexist.com) was down:\nHTTP code: 0\nResponse time: 0 ms"
+            github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: issueTitle,
+              body: issueBody,
+            });
