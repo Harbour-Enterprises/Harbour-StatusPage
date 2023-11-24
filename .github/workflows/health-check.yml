@@ -79,11 +79,9 @@ jobs:
           script: |
             const failed_urls = '${{ steps.health_check.outputs.failed_urls }}'
             console.log(failed_urls)
-            issueTitle = "Health Check Report"
-            issueBody = "Broken Site (https://thissitedoesnotexist.com) was down:\nHTTP code: 0\nResponse time: 0 ms"
             github.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: issueTitle,
-              body: issueBody,
+              title: "Health Check Report",
+              body: "Broken Site () was down:\nHTTP code: 0\nResponse time: 0 ms",
             });
