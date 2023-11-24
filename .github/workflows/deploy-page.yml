@@ -1,6 +1,7 @@
 name: Deploy Status Page
 on:
   workflow_dispatch: {}
+  workflow_call: {}
   push:
     branches:
       - main
