@@ -62,7 +62,8 @@ jobs:
             tail -n 10 logs/${key}_report.log
 
             if [ $result == "failure" ]; then
-              failed_checks="echo $failed_checks | printf '{"key":"%s","name":"%s","url":"%s", "response_time":"%s", "response_code":"%s"}\n' $key $name $url $response_time $response_code"
+              # failed_checks using printf
+              failed_checks=$(printf "%s\n{%s}(%s) was down:\nHTTP code: %s\nResponse time: %s ms" "$failed_checks" "$name" "$url" "$response_code" "$response_time")
             fi
 
           done
@@ -93,14 +94,14 @@ jobs:
           echo "[get outputs...]"
           failed_checks=${{ steps.health_check.outputs.failed_checks }}
           echo "[failed_checks]: $failed_checks"
-          commit_hash=${{ steps.commit.outputs.hash }}
-          echo "[commit_hash]: $commit_hash"
-          commit_short_hash=${commit_hash:0:7}
-          echo "[commit_short_hash]: $commit_short_hash"
-          commit_url="https://github.com/Harbour-Enterprises/Harbour-StatusPage/commit/$commit_hash"
-          echo "[commit_url]: $commit_url"
+          # commit_hash=${{ steps.commit.outputs.hash }}
+          # echo "[commit_hash]: $commit_hash"
+          # commit_short_hash=${commit_hash:0:7}
+          # echo "[commit_short_hash]: $commit_short_hash"
+          # commit_url="https://github.com/Harbour-Enterprises/Harbour-StatusPage/commit/$commit_hash"
+          # echo "[commit_url]: $commit_url"
 
-          echo "[create github issue...]"
-          gh issue create \
-          --title "Health Check Failed" \
-          --body "In [$commit_short_hash]($commit_url), Harbour API (https://test.com) was down:\nHTTP code: 404\nResponse time: 4.7 ms"
+          # echo "[create github issue...]"
+          # gh issue create \
+          # --title "Health Check Failed" \
+          # --body "In [$commit_short_hash]($commit_url), Harbour API (https://test.com) was down:\nHTTP code: 404\nResponse time: 4.7 ms"
