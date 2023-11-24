@@ -67,6 +67,7 @@ jobs:
 
           done
           failed_json=${failed_json::-2}
+          failed_json+=']'
 
           echo "[failed_json]: $failed_json"
           echo "failed_json='$failed_json'" >> $GITHUB_OUTPUT
