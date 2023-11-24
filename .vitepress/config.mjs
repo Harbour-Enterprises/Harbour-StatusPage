@@ -35,9 +35,6 @@ export default defineConfig({
     footer: {
       message: '© 2023 Harbour Enterprises, Inc. 💙💛',
     },
-    nav: [
-      { text: 'Subscribe', link: '' },
-    ],
     socialLinks: [
       { icon: 'github', link: 'https://github.com/Harbour-Enterprises/Harbour-StatusPage' }
     ]

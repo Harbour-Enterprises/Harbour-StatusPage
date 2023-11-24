@@ -1,29 +1,11 @@
+import { parse } from 'yaml';
+
 const maxDays = 30;
 
 export const getUrls = async () => {
-  const response = await fetch('urls.cfg');
+  const response = await fetch('config.yaml');
   const configText = await response.text();
-  const configLines = configText.split('\n');
-  
-  const urls = [];
-  for (const configLine of configLines) {
-    const [key, url] = configLine.split('=');
-    if (!key || !url) {
-      continue;
-    }
-
-    const [cleanUrl] = url.split(' ');
-    if (!cleanUrl) {
-      continue;
-    }
-    
-    urls.push({
-      key,
-      url: cleanUrl.replaceAll('"', '')
-    });
-  }
-  
-  return urls;
+  return parse(configText)?.urls;
 };
 
 export const getReportByUrl = async (key, current = false) => {

@@ -15,7 +15,8 @@ onMounted(async () => {
   <n-list bordered>
     <n-list-item v-for="urlData in urls">
       <StatusTableItem
-        :title="urlData.key"
+        :file-name="urlData.key"
+        :title="urlData.name"
         :description="urlData.url"
       />
     </n-list-item>

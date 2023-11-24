@@ -10,5 +10,8 @@
     "sass": "^1.69.5",
     "unplugin-vue-components": "^0.25.2",
     "vitepress": "^1.0.0-rc.27"
+  },
+  "dependencies": {
+    "yaml": "^2.3.4"
   }
 }

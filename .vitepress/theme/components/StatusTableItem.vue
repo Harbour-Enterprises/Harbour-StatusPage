@@ -1,10 +1,12 @@
 <script setup>
-import { NEl, NThing } from 'naive-ui';
 import { computed, onMounted, ref } from 'vue';
+import { NEl, NThing, NIcon } from 'naive-ui';
+import { CheckCircle, ExclamationCircle, TimesCircle, CircleRegular } from '@vicons/fa';
 import { getReportByUrl } from '../../prepareData';
 import MonthReport from './MonthReport.vue';
 
 const props = defineProps({
+  fileName: String,
   title: String,
   description: String,
 });
@@ -25,8 +27,15 @@ const iconColors = {
   partial: '#f2c97d',
 };
 
+const icons = {
+  nodata: CircleRegular,
+  success: CheckCircle,
+  failure: TimesCircle,
+  partial: ExclamationCircle,
+}
+
 onMounted(async () => {
-  report.value = await getReportByUrl(props.title);
+  report.value = await getReportByUrl(props.fileName);
   const lastDayStatus = Object.values(report.value)[0];
   status.value =
     lastDayStatus == null
@@ -43,25 +52,46 @@ onMounted(async () => {
   <n-thing
     :title="title"
     :title-extra="extraTitle"
-    :description="description"
     :description-style="{
       fontSize: '12px',
-    }">
+    }"
+  >
+    <template #avatar>
+      <n-icon
+        :component="icons[status]"
+        :color="iconColors[status]"
+        size="20"
+      />
+    </template>
+    
+    <template #description>
+      <p>{{ description }}</p>
+      <p class="status" :style="{ color: iconColors[status] }">{{ statusMap[status] }}</p>
+    </template>
+    
     <n-el tag="div" class="item-content">
       <MonthReport :report="report" :status-map="statusMap" :colors="iconColors" />
     </n-el>
   </n-thing>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+p {
+  margin: 0;
+  line-height: 1;
+  & + & {
+    margin-top: 5px;
+  }
+}
 .item-content {
   display: flex;
-  flex-direction: column;
+  flex-direction: column
 }
-.status-data {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 20px;
+.status {
+  font-weight: bolder;
+  font-size: 14px;
+}
+.n-thing::v-deep  .n-thing-avatar-header-wrapper {
+  align-items: center !important;
 }
 </style>
