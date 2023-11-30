@@ -1,7 +1,7 @@
 urls:
   - name: 'Harbour API'
     key: 'api'
-    url: 'https://api.harbourshare.com/v2' # TODO: move to api.myharbourshare.com/v2/health once ready
+    url: 'https://myharbourshare.com/health-check'
   - name: 'Harbour Website'
     key: 'website'
     url: 'https://harbourshare.com'

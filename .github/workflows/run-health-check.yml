@@ -17,6 +17,8 @@ jobs:
       - name: Run Health Check Script
         id: health_check
         working-directory: src/public
+        env:
+          API_KEY: ${{ secrets.WEB_APP_API_HEALTH_CHECK_KEY }}
         run: |
           success_codes=("200" "201" "202" "203" "204" "205" "206" "207" "208" "226" "300" "301" "302" "303" "304" "305" "306" "307" "308")
 
@@ -39,8 +41,9 @@ jobs:
             echo "[url]: $url"
             echo "[key]: $key"
             echo "[name]: $name"
+            echo "Length of the secret: ${#API_KEY}"
 
-            response=$(curl -s -o /dev/null -w "%{http_code}, %{time_total}" $url)
+            response=$(curl -s -o /dev/null -w "%{http_code}, %{time_total}" -H "X-API-KEY: ${{ secrets.WEB_APP_API_HEALTH_CHECK_KEY }}" $url)
             echo "[response]: $response"
 
             response_code=$(echo $response | cut -d',' -f1)
@@ -72,55 +75,55 @@ jobs:
           echo "[failed_endpoints]: $failed_endpoints"
           echo "failed_endpoints='$failed_endpoints'" >> $GITHUB_OUTPUT
 
-      - name: Git commit logs
-        id: commit
-        working-directory: src/public
-        run: |
-          echo "[git commit logs...]"
-          git config --local user.name 'github-actions[bot]'
-          git config --local user.email 'github-actions[bot]@users.noreply.github.com'
-          git add logs/*
-          git commit --allow-empty -m "chore: update logs"
-          git push
-
-          hash=$(git rev-parse HEAD)
-          echo "[hash]: $hash"
-          echo "hash='$hash'" >> $GITHUB_OUTPUT
-
-      - name: Create GitHub Issue
-        if: ${{ fromJson(steps.health_check.outputs.failed_endpoints) != '[]' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "[get commit hash...]"
-          commit_hash=${{ steps.commit.outputs.hash }}
-          echo "[commit_hash]: $commit_hash"
-          commit_short_hash=${commit_hash:0:7}
-          echo "[commit_short_hash]: $commit_short_hash"
-          commit_url="https://github.com/Harbour-Enterprises/Harbour-StatusPage/commit/$commit_hash"
-          echo "[commit_url]: $commit_url"
-
-          echo "[iterate over failed endpoints...]"
-          failed_endpoints=${{ steps.health_check.outputs.failed_endpoints }}
-          echo "[failed_endpoints]: $failed_endpoints"        
-          jq -c '.[]' <<< $failed_endpoints | while read i; do
-
-            echo "[get endpoint details...]"
-            name=$(echo $i | jq -r '.name')
-            url=$(echo $i | jq -r '.url')   
-            response_code=$(echo $i | jq -r '.response_code')
-            response_time=$(echo $i | jq -r '.response_time')
-            echo "[name]: $name"
-            echo "[url]: $url"
-            echo "[response_code]: $response_code"
-            echo "[response_time]: $response_time"
-
-            echo "[create github issue...]"
-            gh issue create \
-            --title "Health Check Failed" \
-            --body "In [$commit_short_hash]($commit_url), $name ($url) was down:<br><br>- HTTP Code: $response_code<br>- Response Time: $response_time"
-
-          done
+#      - name: Git commit logs
+#        id: commit
+#        working-directory: src/public
+#        run: |
+#          echo "[git commit logs...]"
+#          git config --local user.name 'github-actions[bot]'
+#          git config --local user.email 'github-actions[bot]@users.noreply.github.com'
+#          git add logs/*
+#          git commit --allow-empty -m "chore: update logs"
+#          git push
+#
+#          hash=$(git rev-parse HEAD)
+#          echo "[hash]: $hash"
+#          echo "hash='$hash'" >> $GITHUB_OUTPUT
+#
+#      - name: Create GitHub Issue
+#        if: ${{ fromJson(steps.health_check.outputs.failed_endpoints) != '[]' }}
+#        env:
+#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        run: |
+#          echo "[get commit hash...]"
+#          commit_hash=${{ steps.commit.outputs.hash }}
+#          echo "[commit_hash]: $commit_hash"
+#          commit_short_hash=${commit_hash:0:7}
+#          echo "[commit_short_hash]: $commit_short_hash"
+#          commit_url="https://github.com/Harbour-Enterprises/Harbour-StatusPage/commit/$commit_hash"
+#          echo "[commit_url]: $commit_url"
+#
+#          echo "[iterate over failed endpoints...]"
+#          failed_endpoints=${{ steps.health_check.outputs.failed_endpoints }}
+#          echo "[failed_endpoints]: $failed_endpoints"
+#          jq -c '.[]' <<< $failed_endpoints | while read i; do
+#
+#            echo "[get endpoint details...]"
+#            name=$(echo $i | jq -r '.name')
+#            url=$(echo $i | jq -r '.url')
+#            response_code=$(echo $i | jq -r '.response_code')
+#            response_time=$(echo $i | jq -r '.response_time')
+#            echo "[name]: $name"
+#            echo "[url]: $url"
+#            echo "[response_code]: $response_code"
+#            echo "[response_time]: $response_time"
+#
+#            echo "[create github issue...]"
+#            gh issue create \
+#            --title "Health Check Failed" \
+#            --body "In [$commit_short_hash]($commit_url), $name ($url) was down:<br><br>- HTTP Code: $response_code<br>- Response Time: $response_time"
+#
+#          done
 
   deploy-page:
     needs: health_check_job
