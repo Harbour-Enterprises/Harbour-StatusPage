@@ -39,7 +39,6 @@ jobs:
             echo "[url]: $url"
             echo "[key]: $key"
             echo "[name]: $name"
-            echo "Length of the secret: ${#API_KEY}"
 
             response=$(curl -s -o /dev/null -w "%{http_code}, %{time_total}" -H "X-API-KEY: ${{ secrets.WEB_APP_API_HEALTH_CHECK_KEY }}" $url)
             echo "[response]: $response"
