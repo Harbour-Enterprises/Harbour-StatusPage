@@ -1,7 +1,7 @@
 urls:
   - name: 'Harbour API'
     key: 'api'
-    url: 'https://localhost.myharbourshare.com/health-check'
+    url: 'https://localhost.myharbourshare.com/api/verifications/health-check'
   - name: 'Harbour Website'
     key: 'website'
     url: 'https://harbourshare.com'
