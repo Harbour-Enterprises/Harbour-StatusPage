@@ -39,8 +39,11 @@ jobs:
             echo "[url]: $url"
             echo "[key]: $key"
             echo "[name]: $name"
-
-            response=$(curl -s -o /dev/null -w "%{http_code}, %{time_total}" $url)
+            if [[ "$key" == "api" ]]; then
+              response=$(curl -s -o /dev/null -w "%{http_code}, %{time_total}" -H "X-API-KEY: ${{ secrets.WEB_APP_API_HEALTH_CHECK_KEY }}" $url)
+            else
+              response=$(curl -s -o /dev/null -w "%{http_code}, %{time_total}" $url)
+            fi
             echo "[response]: $response"
 
             response_code=$(echo $response | cut -d',' -f1)
@@ -102,12 +105,12 @@ jobs:
 
           echo "[iterate over failed endpoints...]"
           failed_endpoints=${{ steps.health_check.outputs.failed_endpoints }}
-          echo "[failed_endpoints]: $failed_endpoints"        
+          echo "[failed_endpoints]: $failed_endpoints"
           jq -c '.[]' <<< $failed_endpoints | while read i; do
 
             echo "[get endpoint details...]"
             name=$(echo $i | jq -r '.name')
-            url=$(echo $i | jq -r '.url')   
+            url=$(echo $i | jq -r '.url')
             response_code=$(echo $i | jq -r '.response_code')
             response_time=$(echo $i | jq -r '.response_time')
             echo "[name]: $name"
