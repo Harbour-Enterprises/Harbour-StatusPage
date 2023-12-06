@@ -1,8 +1,7 @@
 urls:
   - name: 'Harbour API'
     key: 'api'
-    # TODO: change to external version of the url
-    url: 'https://localhost.myharbourshare.com/api/verifications/health-check'
+    url: 'https://api.myharbourshare.com/v2/verifications/health-check'
   - name: 'Harbour Website'
     key: 'website'
     url: 'https://harbourshare.com'
