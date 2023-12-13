@@ -5,7 +5,7 @@ import { defineConfig } from 'vitepress';
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: 'Status Page',
-  description: '',
+  description: 'Harbour Status Page',
 
   dest: '../docs/',
   srcDir: './src',
