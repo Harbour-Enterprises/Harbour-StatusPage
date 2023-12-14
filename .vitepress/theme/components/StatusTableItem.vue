@@ -1,7 +1,7 @@
 <script setup>
+import { CheckCircle, CircleRegular, ExclamationCircle, TimesCircle } from '@vicons/fa';
+import { NEl, NIcon, NThing } from 'naive-ui';
 import { computed, onMounted, ref } from 'vue';
-import { NEl, NThing, NIcon } from 'naive-ui';
-import { CheckCircle, ExclamationCircle, TimesCircle, CircleRegular } from '@vicons/fa';
 import { getReportByUrl } from '../../prepareData';
 import MonthReport from './MonthReport.vue';
 
@@ -32,7 +32,7 @@ const icons = {
   success: CheckCircle,
   failure: TimesCircle,
   partial: ExclamationCircle,
-}
+};
 
 onMounted(async () => {
   report.value = await getReportByUrl(props.fileName);
@@ -54,21 +54,15 @@ onMounted(async () => {
     :title-extra="extraTitle"
     :description-style="{
       fontSize: '12px',
-    }"
-  >
+    }">
     <template #avatar>
-      <n-icon
-        :component="icons[status]"
-        :color="iconColors[status]"
-        size="20"
-      />
+      <n-icon :component="icons[status]" :color="iconColors[status]" size="20" />
     </template>
-    
+
     <template #description>
-      <p>{{ description }}</p>
       <p class="status" :style="{ color: iconColors[status] }">{{ statusMap[status] }}</p>
     </template>
-    
+
     <n-el tag="div" class="item-content">
       <MonthReport :report="report" :status-map="statusMap" :colors="iconColors" />
     </n-el>
@@ -85,13 +79,13 @@ p {
 }
 .item-content {
   display: flex;
-  flex-direction: column
+  flex-direction: column;
 }
 .status {
   font-weight: bolder;
   font-size: 14px;
 }
-.n-thing::v-deep  .n-thing-avatar-header-wrapper {
+.n-thing::v-deep .n-thing-avatar-header-wrapper {
   align-items: center !important;
 }
 </style>
