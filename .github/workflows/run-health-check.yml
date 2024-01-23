@@ -129,6 +129,7 @@ jobs:
     needs: health_check_job
     uses: ./.github/workflows/deploy-page.yml
     permissions:
-      contents: read
       pages: write
       id-token: write
+      pull-requests: write
+      contents: write
