@@ -6,10 +6,6 @@ on:
   schedule:
     - cron: '30 * * * *'
 
-permissions:
-  pages: write
-  id-token: write
-
 jobs:
   health_check_job:
     runs-on: ubuntu-latest

@@ -7,6 +7,11 @@ on:
       - main
     paths-ignore:
       - '.github/**'
+
+permissions:
+  pages: write
+  id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
