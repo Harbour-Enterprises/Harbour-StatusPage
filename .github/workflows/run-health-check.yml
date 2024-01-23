@@ -127,4 +127,4 @@ jobs:
 
   deploy-page:
     needs: health_check_job
-    uses: ./.github/workflows/deploy-page.yml@main
+    uses: ./.github/workflows/deploy-page.yml
